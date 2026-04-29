@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <h1><span class="icon">💸</span> Expense Tracker</h1>
+  </div>
+
+  <!-- BALANCE -->
+  <h2 id="balance">Total: Rp 0</h2>
+
+  <!-- FORM -->
+  <div>
+    <p class="section-label">Add Transaction</p>
+    <form id="form">
+      <input type="text" id="name" placeholder="Item name (e.g. Lunch)">
+      <input type="number" id="amount" placeholder="Amount (Rp)" min="1">
+
+      <select id="category">
+        <option value="">Select Category</option>
+        <option value="Food">🍔 Food</option>
+        <option value="Transport">🚌 Transport</option>
+        <option value="Fun">🎮 Fun</option>
+        <option value="custom">＋ Add Custom Category</option>
+      </select>
+
+      <input type="text" id="customCategory" placeholder="New category name…" style="display:none;">
+      <input type="date" id="date">
+
+      <button type="submit">Add Transaction</button>
+    </form>
+  </div>
+
+  <hr class="divider">
+
+  <!-- FILTER + SORT -->
+  <div>
+    <p class="section-label">Filter &amp; Sort</p>
+    <div class="controls">
+      <select id="sort">
+        <option value="">Sort By…</option>
+        <option value="amount-desc">↓ Amount (High → Low)</option>
+        <option value="amount-asc">↑ Amount (Low → High)</option>
+        <option value="category">A–Z Category</option>
+      </select>
+      <input type="month" id="monthFilter" title="Filter by month">
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div>
+    <p class="section-label">Transactions</p>
+    <ul id="list"></ul>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-section">
+    <p class="section-label">Spending by Category</p>
+    <canvas id="chart"></canvas>
+  </div>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
