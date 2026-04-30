@@ -16,23 +16,23 @@ let categoriesList = [];
 let colorMap      = {};
 let chart         = null;
 
-// --- Soft color palette (Discord-friendly, medium saturation) ---
+// --- Pastel color palette ---
 const PALETTE = [
-  '#7EB8D4', // muted blue
-  '#82C9A0', // muted green
-  '#B39DDB', // muted purple
-  '#F4A96A', // muted orange
-  '#F08080', // muted coral
-  '#80CBC4', // muted teal
-  '#FFD180', // muted amber
-  '#CE93D8', // muted lavender
+  '#f28b82', // pastel red
+  '#81c995', // pastel green
+  '#8ab4f8', // pastel blue
+  '#fbbc04', // pastel yellow
+  '#ff8bcb', // pastel pink
+  '#78d9ec', // pastel cyan
+  '#c58af9', // pastel purple
+  '#fcad70', // pastel orange
 ];
 
-// Pinned colors for default categories — guaranteed distinct
+// Pinned colors for default categories
 const PINNED_COLORS = {
-  'Food':      '#82C9A0', // muted green
-  'Transport': '#7EB8D4', // muted blue
-  'Fun':       '#F4A96A', // muted orange
+  'Food':      '#81c995', // pastel green
+  'Transport': '#8ab4f8', // pastel blue
+  'Fun':       '#fbbc04', // pastel yellow
 };
 
 function simpleHash(str) {
@@ -169,18 +169,34 @@ function deleteTransaction(id) {
 sortSelect.addEventListener('change', render);
 monthFilter.addEventListener('change', render);
 
+// --- Format month value (YYYY-MM) into readable label ---
+function formatMonthLabel(value) {
+  if (!value) return '';
+  const [year, month] = value.split('-');
+  const date = new Date(Number(year), Number(month) - 1, 1);
+  return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+}
+
 // --- Render ---
 function render() {
   list.innerHTML = '';
 
+  // If no month selected, show neutral state
+  if (!monthFilter.value) {
+    balanceEl.innerText = 'Total: Rp 0';
+    const empty = document.createElement('li');
+    empty.className = 'empty-state';
+    empty.innerHTML = '<span class="empty-icon">📅</span>Select a month above to view your transactions.';
+    list.appendChild(empty);
+    updateChart({});
+    return;
+  }
+
   let total = 0;
   const categoryTotals = {};
 
-  // Filter
-  let filtered = [...transactions];
-  if (monthFilter.value) {
-    filtered = filtered.filter(t => t.date.startsWith(monthFilter.value));
-  }
+  // Filter by selected month
+  const filtered = transactions.filter(t => t.date.startsWith(monthFilter.value));
 
   // Sort
   const sorted = [...filtered];
@@ -192,13 +208,13 @@ function render() {
     sorted.sort((a, b) => a.category.localeCompare(b.category));
   }
 
-  // Empty state
+  // Empty state (month selected but no transactions)
   if (sorted.length === 0) {
     const empty = document.createElement('li');
     empty.className = 'empty-state';
-    empty.textContent = 'No transactions yet. Add one above!';
+    empty.innerHTML = `<span class="empty-icon">🌵</span>No transactions for ${formatMonthLabel(monthFilter.value)}.`;
     list.appendChild(empty);
-    balanceEl.innerText = 'Total: Rp 0';
+    balanceEl.innerText = `Total for ${formatMonthLabel(monthFilter.value)}: Rp 0`;
     updateChart({});
     return;
   }
@@ -217,22 +233,31 @@ function render() {
       <div class="item-info">
         <span class="item-name">${escapeHtml(t.name)}</span>
         <span class="item-meta">
-          Rp ${t.amount.toLocaleString('id-ID')}
+          <span class="item-amount">Rp ${t.amount.toLocaleString('id-ID')}</span>
           <span class="badge" style="background:${color}">${escapeHtml(t.category)}</span>
         </span>
-        <span class="item-date">${t.date}</span>
+        <span class="item-date">📅 ${t.date}</span>
       </div>
       <button class="delete" onclick="deleteTransaction(${t.id})" title="Delete transaction" aria-label="Delete ${escapeHtml(t.name)}">✕</button>
     `;
     list.appendChild(li);
   });
 
-  balanceEl.innerText = `Total: Rp ${total.toLocaleString('id-ID')}`;
+  const balanceLabel = `Total for ${formatMonthLabel(monthFilter.value)}: Rp ${total.toLocaleString('id-ID')}`;
+  balanceEl.innerText = balanceLabel;
   updateChart(categoryTotals);
 }
 
 // --- Chart ---
 function updateChart(data) {
+  // Update chart section label
+  const chartLabel = document.querySelector('.chart-section .section-label');
+  if (chartLabel) {
+    chartLabel.textContent = monthFilter.value
+      ? `Spending by Category — ${formatMonthLabel(monthFilter.value)}`
+      : 'Spending by Category';
+  }
+
   const ctx = document.getElementById('chart').getContext('2d');
 
   if (chart) {
@@ -246,35 +271,42 @@ function updateChart(data) {
   const colors = labels.map(label => getColor(label));
 
   chart = new Chart(ctx, {
-    type: 'pie',
+    type: 'doughnut',
     data: {
       labels,
       datasets: [{
         data: Object.values(data),
         backgroundColor: colors,
-        borderColor: '#2b2d31',
-        borderWidth: 2,
-        hoverOffset: 6,
+        borderColor: '#27273a',
+        borderWidth: 3,
+        hoverOffset: 18,
+        offset: 6,
       }],
     },
     options: {
+      cutout: '58%',
       plugins: {
         legend: {
+          position: 'bottom',
           labels: {
-            color: '#b5bac1',
-            font: { size: 12, family: "'Segoe UI', system-ui, sans-serif" },
-            padding: 16,
-            boxWidth: 14,
+            color: '#a9a9c8',
+            font: { size: 12, family: "'Nunito', system-ui, sans-serif", weight: '700' },
+            padding: 18,
+            boxWidth: 12,
+            boxHeight: 12,
+            usePointStyle: true,
+            pointStyle: 'circle',
           },
         },
         tooltip: {
-          backgroundColor: '#1e1f22',
-          titleColor: '#f2f3f5',
-          bodyColor: '#b5bac1',
-          borderColor: '#3f4147',
+          backgroundColor: '#32324a',
+          titleColor: '#e8e8f0',
+          bodyColor: '#a9a9c8',
+          borderColor: '#3a3a54',
           borderWidth: 1,
+          padding: 10,
           callbacks: {
-            label: ctx => ` Rp ${ctx.parsed.toLocaleString('id-ID')}`,
+            label: ctx => `  Rp ${ctx.parsed.toLocaleString('id-ID')}`,
           },
         },
       },

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expense Tracker</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -13,42 +13,43 @@
 
   <!-- HEADER -->
   <div class="app-header">
-    <h1><span class="icon">💸</span> Expense Tracker</h1>
+    <h1>💸Expense Tracker💸</h1>
+    <p class="subtitle">✨Kontrol pengeluaran bang, abis duit tau rasa✨</p>
   </div>
 
   <!-- BALANCE -->
   <h2 id="balance">Total: Rp 0</h2>
 
   <!-- FORM -->
-  <div>
+  <div class="form-card">
     <p class="section-label">Add Transaction</p>
     <form id="form">
-      <input type="text" id="name" placeholder="Item name (e.g. Lunch)">
-      <input type="number" id="amount" placeholder="Amount (Rp)" min="1">
+      <div class="input-row">
+        <input type="text" id="name" placeholder="✏️ Item name…">
+        <input type="number" id="amount" placeholder="💰 Amount (Rp)" min="1">
+      </div>
 
       <select id="category">
-        <option value="">Select Category</option>
+        <option value="">🏷️ Select Category</option>
         <option value="Food">🍔 Food</option>
         <option value="Transport">🚌 Transport</option>
         <option value="Fun">🎮 Fun</option>
         <option value="custom">＋ Add Custom Category</option>
       </select>
 
-      <input type="text" id="customCategory" placeholder="New category name…" style="display:none;">
+      <input type="text" id="customCategory" placeholder="🆕 New category name…" style="display:none;">
       <input type="date" id="date">
 
-      <button type="submit">Add Transaction</button>
+      <button type="submit">＋ Add Transaction</button>
     </form>
   </div>
 
-  <hr class="divider">
-
   <!-- FILTER + SORT -->
-  <div>
+  <div class="controls-card">
     <p class="section-label">Filter &amp; Sort</p>
     <div class="controls">
       <select id="sort">
-        <option value="">Sort By…</option>
+        <option value="">Recently Added</option>
         <option value="amount-desc">↓ Amount (High → Low)</option>
         <option value="amount-asc">↑ Amount (Low → High)</option>
         <option value="category">A–Z Category</option>
@@ -58,7 +59,7 @@
   </div>
 
   <!-- LIST -->
-  <div>
+  <div class="list-card">
     <p class="section-label">Transactions</p>
     <ul id="list"></ul>
   </div>

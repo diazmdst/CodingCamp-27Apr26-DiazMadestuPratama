@@ -1,35 +1,32 @@
 /* =============================================
-   Discord-Style Dark Theme — Expense Tracker
+   Pastel Dark Theme — Expense Tracker
    ============================================= */
+
+/* --- Google Font --- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
 /* --- CSS Variables --- */
 :root {
-  --bg-primary:    #313338;   /* main page background */
-  --bg-secondary:  #2b2d31;   /* container / card */
-  --bg-tertiary:   #1e1f22;   /* inputs, list items */
-  --bg-hover:      #35373c;   /* hover state */
-  --accent:        #5865f2;   /* Discord blurple */
-  --accent-hover:  #4752c4;
-  --accent-green:  #57f287;
-  --accent-red:    #ed4245;
-  --accent-yellow: #fee75c;
-  --text-primary:  #f2f3f5;
-  --text-secondary:#b5bac1;
-  --text-muted:    #80848e;
-  --border:        #3f4147;
-  --radius-sm:     4px;
-  --radius-md:     8px;
-  --radius-lg:     12px;
+  --bg-page:       #1e1e2e;
+  --bg-card:       #27273a;
+  --bg-input:      #32324a;
+  --bg-hover:      #3a3a54;
 
-  /* Category palette — soft, medium-saturation */
-  --cat-1: #7EB8D4;
-  --cat-2: #82C9A0;
-  --cat-3: #B39DDB;
-  --cat-4: #F4A96A;
-  --cat-5: #F08080;
-  --cat-6: #80CBC4;
-  --cat-7: #FFD180;
-  --cat-8: #CE93D8;
+  --accent:        #f28b82;   /* pastel red */
+  --accent-hover:  #e07068;
+  --accent-2:      #fbbc04;   /* pastel yellow */
+  --accent-3:      #81c995;   /* pastel green */
+  --accent-4:      #8ab4f8;   /* pastel blue */
+
+  --text-primary:  #e8e8f0;
+  --text-secondary:#a9a9c8;
+  --text-muted:    #6e6e9a;
+  --border:        #3a3a54;
+
+  --radius-sm:     10px;
+  --radius-md:     16px;
+  --radius-lg:     22px;
+  --radius-pill:   999px;
 }
 
 /* --- Reset & Base --- */
@@ -40,71 +37,94 @@
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-primary);
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-page);
   color: var(--text-primary);
   min-height: 100vh;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 32px 16px;
+  padding: 36px 16px 60px;
 }
 
-/* --- Container / Card --- */
+/* --- Container --- */
 .container {
   width: 100%;
-  max-width: 480px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius-lg);
-  padding: 28px 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-width: 500px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* --- Header --- */
 .app-header {
   text-align: center;
+  padding: 8px 0 2px;
 }
 
 .app-header h1 {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: 0.3px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  letter-spacing: -0.2px;
 }
 
-.app-header h1 .icon {
-  font-size: 24px;
+.app-header .subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 600;
 }
 
 /* --- Balance Display --- */
 #balance {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
+  background: var(--accent);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--accent-green);
+  padding: 16px 22px;
+  font-size: 19px;
+  font-weight: 800;
+  color: #1e1e2e;
   text-align: center;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
+  transition: background 0.25s ease;
+}
+
+/* --- Cards --- */
+.form-card,
+.controls-card,
+.list-card,
+.chart-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* --- Section Labels --- */
 .section-label {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
 /* --- Form --- */
@@ -114,136 +134,142 @@ body {
   gap: 10px;
 }
 
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.input-row input { flex: 1; }
+
 input, select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 11px 14px;
   font-size: 14px;
   font-family: inherit;
-  background: var(--bg-tertiary);
+  font-weight: 600;
+  background: var(--bg-input);
   color: var(--text-primary);
-  border: 1px solid var(--border);
+  border: 2px solid transparent;
   border-radius: var(--radius-sm);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
   appearance: none;
   -webkit-appearance: none;
 }
 
 input::placeholder {
   color: var(--text-muted);
+  font-weight: 600;
 }
 
 input:focus, select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.25);
+  box-shadow: 0 0 0 3px rgba(242, 139, 130, 0.2);
+  transform: translateY(-1px);
 }
 
-/* Date input calendar icon color fix */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="month"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.7);
+  filter: invert(0.55);
   cursor: pointer;
 }
 
-/* Select arrow */
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2380848e' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236e6e9a' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 32px;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
 
 select option {
-  background: var(--bg-tertiary);
+  background: var(--bg-input);
   color: var(--text-primary);
 }
 
 /* Submit button */
 button[type="submit"] {
-  padding: 11px;
+  padding: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 800;
   font-family: inherit;
   background: var(--accent);
-  color: #fff;
+  color: #1e1e2e;
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+  box-shadow: 0 3px 10px rgba(242, 139, 130, 0.3);
   letter-spacing: 0.2px;
 }
 
 button[type="submit"]:hover {
   background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(242, 139, 130, 0.35);
 }
 
 button[type="submit"]:active {
-  transform: scale(0.98);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 1px 6px rgba(242, 139, 130, 0.2);
 }
 
-/* --- Controls (Sort + Filter) --- */
+/* --- Controls --- */
 .controls {
   display: flex;
   gap: 10px;
 }
 
 .controls select,
-.controls input {
-  flex: 1;
-}
+.controls input { flex: 1; }
 
 /* --- Transaction List --- */
 #list {
   list-style: none;
-  max-height: 260px;
+  max-height: 280px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-right: 2px;
+  gap: 8px;
+  padding-right: 4px;
 }
 
-/* Scrollbar styling */
-#list::-webkit-scrollbar {
-  width: 4px;
-}
-#list::-webkit-scrollbar-track {
-  background: transparent;
-}
-#list::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-}
-#list::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
+#list::-webkit-scrollbar { width: 4px; }
+#list::-webkit-scrollbar-track { background: transparent; }
+#list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+#list::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* List item */
 #list li {
-  background: var(--bg-tertiary);
+  background: var(--bg-input);
   border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);   /* overridden per-item by JS */
+  border-left: 4px solid var(--accent);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 11px 13px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  transition: background 0.1s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 #list li:hover {
-  background: var(--bg-hover);
+  transform: translateX(3px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 #list li .item-info {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 #list li .item-name {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   color: var(--text-primary);
 }
@@ -251,23 +277,33 @@ button[type="submit"]:active {
 #list li .item-meta {
   color: var(--text-secondary);
   font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+#list li .item-amount {
+  color: var(--accent-2);
+  font-weight: 700;
 }
 
 #list li .item-date {
   color: var(--text-muted);
   font-size: 11px;
+  font-weight: 600;
 }
 
 /* Category badge */
 .badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
   font-size: 11px;
-  font-weight: 600;
-  color: #1e1f22;
-  margin-left: 6px;
-  vertical-align: middle;
+  font-weight: 700;
+  color: #1e1e2e;
 }
 
 /* Delete button */
@@ -275,18 +311,19 @@ button[type="submit"]:active {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: var(--radius-sm);
   line-height: 1;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.1s ease;
   flex-shrink: 0;
 }
 
 .delete:hover {
-  color: var(--accent-red);
-  background: rgba(237, 66, 69, 0.15);
+  color: var(--accent);
+  background: rgba(242, 139, 130, 0.15);
+  transform: scale(1.15);
 }
 
 /* Empty state */
@@ -294,39 +331,78 @@ button[type="submit"]:active {
   text-align: center;
   color: var(--text-muted);
   font-size: 13px;
-  padding: 20px 0;
+  font-weight: 600;
+  padding: 24px 0;
+  line-height: 1.6;
+  list-style: none;
 }
 
-/* --- Chart Section --- */
-.chart-section {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px;
+.empty-state .empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
 }
+
+/* --- Chart --- */
+.chart-section { padding-bottom: 22px; }
 
 #chart {
-  max-height: 260px;
-}
-
-/* --- Divider --- */
-.divider {
-  height: 1px;
-  background: var(--border);
-  border: none;
-  margin: 0;
+  max-height: 280px;
+  margin-top: 8px;
 }
 
 /* --- Responsive --- */
 @media (max-width: 520px) {
-  body {
-    padding: 16px 8px;
-  }
-  .container {
-    padding: 20px 16px;
-    border-radius: var(--radius-md);
-  }
-  .controls {
-    flex-direction: column;
-  }
+  body { padding: 20px 12px 48px; }
+  .controls { flex-direction: column; }
+  .input-row { flex-direction: column; }
+  .app-header h1 { font-size: 21px; }
+}
+  line-height: 1;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+
+.delete:hover {
+  color: #e94560;
+  background: rgba(233, 69, 96, 0.15);
+  transform: scale(1.15);
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 24px 0;
+  line-height: 1.6;
+}
+
+.empty-state .empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* --- Chart Card --- */
+.chart-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+#chart {
+  max-height: 280px;
+  margin-top: 8px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 520px) {
+  body { padding: 20px 12px 48px; }
+  .controls { flex-direction: column; }
+  .input-row { flex-direction: column; }
+  .app-header h1 { font-size: 22px; }
 }
