@@ -151,9 +151,8 @@ function renderCategoryTags() {
 
   custom.forEach(cat => {
     const color = getColor(cat);
-    const tag = document.createElement('span');
+    const tag = document.createElement('li');
     tag.className = 'cat-tag';
-    tag.setAttribute('role', 'listitem');
     tag.style.borderColor = color;
     tag.innerHTML = `
       <span class="cat-tag-dot" style="background:${color}" aria-hidden="true"></span>
@@ -186,6 +185,29 @@ categoryTagsEl.addEventListener('click', e => {
   const btn = e.target.closest('.btn-delete-category');
   if (btn) deleteCategory(btn.dataset.category);
 });
+
+// ============================================================
+// Overall Total (year-scoped when a month is selected)
+// ============================================================
+
+function updateOverallTotal() {
+  const overallEl = document.getElementById('overallTotal');
+  const year = monthFilter.value ? monthFilter.value.split('-')[0] : null;
+
+  overallEl.hidden = false;
+
+  if (!year) {
+    document.getElementById('overallLabel').textContent = 'Yearly Total';
+    document.getElementById('overallAmount').textContent = 'Rp 0';
+    return;
+  }
+
+  const filtered = transactions.filter(t => t.date.startsWith(year));
+  const total = filtered.reduce((sum, t) => sum + t.amount, 0);
+
+  document.getElementById('overallLabel').textContent = `${year} Total`;
+  document.getElementById('overallAmount').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+}
 
 // ============================================================
 // Balance Display
@@ -245,6 +267,7 @@ formEl.addEventListener('submit', e => {
 
   saveTransactions();
   render();
+  updateOverallTotal();
 
   formEl.reset();
   categorySelect.value = '';
@@ -260,6 +283,57 @@ function deleteTransaction(id) {
   transactions = transactions.filter(t => t.id !== id);
   saveTransactions();
   render();
+  updateOverallTotal();
+}
+
+// ============================================================
+// Monthly Summary
+// ============================================================
+
+function renderSummary(filtered, categoryTotals, grandTotal) {
+  const card = document.getElementById('summaryCard');
+  if (!card) return;
+
+  if (!monthFilter.value || filtered.length === 0) {
+    card.hidden = true;
+    return;
+  }
+
+  card.hidden = false;
+
+  // Stats
+  const count = filtered.length;
+  const avg   = count > 0 ? Math.round(grandTotal / count) : 0;
+  const topCat = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
+
+  document.getElementById('summaryTotal').textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+  document.getElementById('summaryCount').textContent = count;
+  document.getElementById('summaryTop').textContent   = topCat;
+  document.getElementById('summaryAvg').textContent   = `Rp ${avg.toLocaleString('id-ID')}`;
+
+  // Per-category breakdown
+  const breakdown = document.getElementById('summaryBreakdown');
+  breakdown.innerHTML = '';
+
+  Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([cat, amount]) => {
+      const color = getColor(cat);
+      const pct   = ((amount / grandTotal) * 100).toFixed(1);
+      const li    = document.createElement('li');
+      li.className = 'summary-row';
+      li.innerHTML = `
+        <span class="summary-dot" style="background:${color}" aria-hidden="true"></span>
+        <span class="summary-cat">${escapeHtml(cat)}</span>
+        <div class="summary-bar-wrap">
+          <div class="summary-bar" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <span class="summary-pct">${pct}%</span>
+        <span class="summary-amt">Rp ${amount.toLocaleString('id-ID')}</span>
+      `;
+      breakdown.appendChild(li);
+    });
 }
 
 // ============================================================
@@ -267,7 +341,7 @@ function deleteTransaction(id) {
 // ============================================================
 
 sortSelect.addEventListener('change', render);
-monthFilter.addEventListener('change', render);
+monthFilter.addEventListener('change', () => { render(); updateOverallTotal(); });
 
 // ============================================================
 // Render
@@ -278,7 +352,10 @@ function render() {
 
   // No month selected — neutral state
   if (!monthFilter.value) {
-    setBalance('Total', 'Rp 0');
+    balanceEl.hidden = false;
+    setBalance('Monthly Total', 'Rp 0');
+    listEl.classList.remove('has-items');
+    document.getElementById('summaryCard').hidden = true;
     const empty = document.createElement('li');
     empty.className = 'empty-state';
     empty.innerHTML = '<span class="empty-icon">📅</span>Select a month above to view transactions.';
@@ -288,6 +365,7 @@ function render() {
   }
 
   const monthLabel = formatMonthLabel(monthFilter.value);
+  balanceEl.hidden = false;
 
   // Filter
   const filtered = transactions.filter(t => t.date.startsWith(monthFilter.value));
@@ -300,52 +378,19 @@ function render() {
     sorted.sort((a, b) => a.amount - b.amount);
   } else if (sortSelect.value === 'category') {
     sorted.sort((a, b) => a.category.localeCompare(b.category));
+  } else {
+    // Default: most recently added on top (highest id = latest timestamp)
+    sorted.sort((a, b) => b.id - a.id);
   }
 
   // Empty month
   if (sorted.length === 0) {
+    listEl.classList.remove('has-items');
+    document.getElementById('summaryCard').hidden = true;
     const empty = document.createElement('li');
     empty.className = 'empty-state';
     empty.innerHTML = `
-      <span class="empty-icon">
-        <svg class="desert-scene" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect width="200" height="100" fill="#2a2a3e"/>
-          <circle cx="20"  cy="10" r="0.8" fill="#e8e8f0" opacity="0.6" class="star s1"/>
-          <circle cx="55"  cy="6"  r="0.6" fill="#e8e8f0" opacity="0.5" class="star s2"/>
-          <circle cx="90"  cy="12" r="0.9" fill="#e8e8f0" opacity="0.7" class="star s3"/>
-          <circle cx="130" cy="5"  r="0.7" fill="#e8e8f0" opacity="0.5" class="star s1"/>
-          <circle cx="165" cy="9"  r="0.6" fill="#e8e8f0" opacity="0.6" class="star s2"/>
-          <circle cx="185" cy="14" r="0.8" fill="#e8e8f0" opacity="0.4" class="star s3"/>
-          <circle cx="40"  cy="18" r="0.5" fill="#e8e8f0" opacity="0.5" class="star s2"/>
-          <circle cx="110" cy="20" r="0.7" fill="#e8e8f0" opacity="0.6" class="star s1"/>
-          <circle cx="160" cy="18" r="9" fill="#fbbc04" opacity="0.85" class="moon"/>
-          <circle cx="164" cy="15" r="7" fill="#2a2a3e"/>
-          <g class="cloud c1">
-            <ellipse cx="30" cy="28" rx="14" ry="6" fill="#3a3a54" opacity="0.7"/>
-            <ellipse cx="22" cy="30" rx="9"  ry="5" fill="#3a3a54" opacity="0.7"/>
-            <ellipse cx="40" cy="30" rx="9"  ry="5" fill="#3a3a54" opacity="0.7"/>
-          </g>
-          <g class="cloud c2">
-            <ellipse cx="140" cy="22" rx="18" ry="7" fill="#3a3a54" opacity="0.5"/>
-            <ellipse cx="130" cy="25" rx="11" ry="5" fill="#3a3a54" opacity="0.5"/>
-            <ellipse cx="152" cy="25" rx="10" ry="5" fill="#3a3a54" opacity="0.5"/>
-          </g>
-          <ellipse cx="100" cy="95" rx="130" ry="28" fill="#4a3f2f"/>
-          <ellipse cx="30"  cy="98" rx="60"  ry="20" fill="#3e3428"/>
-          <ellipse cx="175" cy="97" rx="55"  ry="18" fill="#3e3428"/>
-          <rect x="38" y="58" width="5" height="22" rx="2" fill="#3d6b4f"/>
-          <rect x="28" y="64" width="10" height="4"  rx="2" fill="#3d6b4f"/>
-          <rect x="24" y="56" width="5"  height="12" rx="2" fill="#3d6b4f"/>
-          <rect x="43" y="68" width="10" height="4"  rx="2" fill="#3d6b4f"/>
-          <rect x="48" y="60" width="5"  height="12" rx="2" fill="#3d6b4f"/>
-          <rect x="148" y="66" width="4" height="16" rx="2" fill="#3d6b4f"/>
-          <rect x="140" y="70" width="8" height="3"  rx="2" fill="#3d6b4f"/>
-          <rect x="136" y="64" width="4" height="10" rx="2" fill="#3d6b4f"/>
-          <line x1="60"  y1="80" x2="80"  y2="80" stroke="#6e6e9a" stroke-width="0.6" opacity="0.4" class="shimmer sh1"/>
-          <line x1="100" y1="78" x2="125" y2="78" stroke="#6e6e9a" stroke-width="0.6" opacity="0.3" class="shimmer sh2"/>
-          <line x1="70"  y1="83" x2="95"  y2="83" stroke="#6e6e9a" stroke-width="0.6" opacity="0.35" class="shimmer sh3"/>
-        </svg>
-      </span>
+      <span class="empty-icon">🌵</span>
       No transactions for ${monthLabel}.
     `;
     listEl.appendChild(empty);
@@ -358,6 +403,8 @@ function render() {
   const grandTotal = sorted.reduce((sum, t) => sum + t.amount, 0);
   let runningTotal = 0;
   const categoryTotals = {};
+
+  listEl.classList.add('has-items');
 
   sorted.forEach(t => {
     runningTotal += t.amount;
@@ -389,6 +436,7 @@ function render() {
   });
 
   setBalance(`Total — ${monthLabel}`, `Rp ${runningTotal.toLocaleString('id-ID')}`);
+  renderSummary(filtered, categoryTotals, grandTotal);
   updateChart(categoryTotals);
 }
 
@@ -486,4 +534,5 @@ function updateChart(data) {
 loadStorage();
 loadCategories();
 renderCategoryTags();
+updateOverallTotal();
 render();

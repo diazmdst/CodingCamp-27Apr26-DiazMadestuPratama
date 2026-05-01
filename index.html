@@ -19,11 +19,19 @@
     <p class="subtitle">✨ Kontrol pengeluaran bang, abis duit tau rasa ✨</p>
   </header>
 
-  <!-- ===== BALANCE ===== -->
-  <section aria-label="Monthly total" id="balance">
-    <span class="balance-label">Total</span>
-    <span class="balance-amount">Rp 0</span>
-  </section>
+  <!-- ===== YEAR TOTAL ===== -->
+  <!-- output: live region for computed year total -->
+  <output class="overall-total" id="overallTotal" aria-live="polite" aria-label="Year total">
+    <span class="overall-label" id="overallLabel">Total</span>
+    <span class="overall-amount" id="overallAmount">Rp 0</span>
+  </output>
+
+  <!-- ===== MONTHLY BALANCE ===== -->
+  <!-- output: live region for computed monthly total -->
+  <output class="card" id="balance" aria-live="polite" aria-label="Monthly total">
+    <p class="balance-label">Total</p>
+    <p class="balance-amount">Rp 0</p>
+  </output>
 
   <!-- ===== ADD TRANSACTION ===== -->
   <section class="card" aria-labelledby="form-heading">
@@ -50,7 +58,7 @@
       <input type="text" id="customCategory" placeholder="🆕 New category name…" autocomplete="off" hidden>
 
       <!-- Custom category tags (rendered by JS) -->
-      <div id="customCategoryTags" role="list" aria-label="Custom categories"></div>
+      <ul id="customCategoryTags" aria-label="Custom categories"></ul>
 
       <label class="sr-only" for="date">Date</label>
       <input type="date" id="date" required>
@@ -76,6 +84,31 @@
     </div>
   </section>
 
+  <!-- ===== MONTHLY SUMMARY ===== -->
+  <section class="card summary-card" id="summaryCard" aria-labelledby="summary-heading" hidden>
+    <h2 class="section-label" id="summary-heading">Monthly Summary</h2>
+    <!-- dl/dt/dd: semantic key-value pairs for stats -->
+    <dl class="summary-stats">
+      <div class="stat-box">
+        <dt class="stat-label">Total Spent</dt>
+        <dd class="stat-value" id="summaryTotal">Rp 0</dd>
+      </div>
+      <div class="stat-box">
+        <dt class="stat-label">Transactions</dt>
+        <dd class="stat-value" id="summaryCount">0</dd>
+      </div>
+      <div class="stat-box">
+        <dt class="stat-label">Top Category</dt>
+        <dd class="stat-value" id="summaryTop">—</dd>
+      </div>
+      <div class="stat-box">
+        <dt class="stat-label">Avg per Item</dt>
+        <dd class="stat-value" id="summaryAvg">Rp 0</dd>
+      </div>
+    </dl>
+    <ul class="summary-breakdown" id="summaryBreakdown" aria-label="Spending per category"></ul>
+  </section>
+
   <!-- ===== TRANSACTION LIST ===== -->
   <section class="card" aria-labelledby="list-heading">
     <h2 class="section-label" id="list-heading">Transactions</h2>
@@ -85,7 +118,7 @@
   <!-- ===== CHART ===== -->
   <section class="card chart-section" aria-labelledby="chart-heading">
     <h2 class="section-label" id="chart-heading">Spending by Category</h2>
-    <canvas id="chart" role="img" aria-label="Spending by category pie chart"></canvas>
+    <canvas id="chart" role="img" aria-label="Spending by category doughnut chart"></canvas>
   </section>
 
   <!-- ===== FOOTER ===== -->
