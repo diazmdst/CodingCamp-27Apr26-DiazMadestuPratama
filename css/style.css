@@ -187,6 +187,10 @@ input, select {
   border-radius: var(--radius-sm);
   outline: none;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+}
+
+/* Only suppress appearance on select (for custom arrow) — not on date/month inputs */
+select {
   appearance: none;
   -webkit-appearance: none;
 }
