@@ -273,6 +273,7 @@ formEl.addEventListener('submit', e => {
   categorySelect.value = '';
   customCategoryInput.hidden = true;
   customCategoryInput.required = false;
+  syncDatePlaceholder(document.getElementById('date'), 'dateWrapper');
 });
 
 // ============================================================
@@ -335,6 +336,24 @@ function renderSummary(filtered, categoryTotals, grandTotal) {
       breakdown.appendChild(li);
     });
 }
+
+// ============================================================
+// Date placeholder overlay helpers
+// ============================================================
+
+function syncDatePlaceholder(input, wrapperId) {
+  const wrapper = document.getElementById(wrapperId);
+  if (!wrapper) return;
+  wrapper.classList.toggle('has-value', !!input.value);
+}
+
+document.getElementById('date').addEventListener('change', function () {
+  syncDatePlaceholder(this, 'dateWrapper');
+});
+
+document.getElementById('monthFilter').addEventListener('change', function () {
+  syncDatePlaceholder(this, 'monthFilterWrapper');
+});
 
 // ============================================================
 // Filter & Sort Events
@@ -535,4 +554,7 @@ loadStorage();
 loadCategories();
 renderCategoryTags();
 updateOverallTotal();
+// Sync placeholders on load (in case browser restores values)
+syncDatePlaceholder(document.getElementById('date'), 'dateWrapper');
+syncDatePlaceholder(document.getElementById('monthFilter'), 'monthFilterWrapper');
 render();

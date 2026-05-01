@@ -249,6 +249,42 @@ button[type="submit"]:active {
   box-shadow: 0 1px 6px rgba(242, 139, 130, 0.2);
 }
 
+/* ---- Date input placeholder overlay ---- */
+.date-wrapper {
+  position: relative;
+}
+
+.date-wrapper input[type="date"] {
+  width: 100%;
+}
+
+.date-placeholder {
+  position: absolute;
+  inset: 0;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+}
+
+/* Hide overlay once the input has a value — toggled via JS class */
+#date:focus ~ .date-placeholder,
+.date-wrapper.has-value .date-placeholder {
+  display: none;
+}
+
+#monthFilter:focus ~ .date-placeholder,
+.month-wrapper.has-value .date-placeholder {
+  display: none;
+}
+
 /* ---- Controls (filter & sort) ---- */
 .controls { display: flex; gap: 10px; }
 .controls select, .controls input { flex: 1; }

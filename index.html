@@ -61,7 +61,10 @@
       <ul id="customCategoryTags" aria-label="Custom categories"></ul>
 
       <label class="sr-only" for="date">Date</label>
-      <input type="date" id="date" required>
+      <div class="date-wrapper" id="dateWrapper">
+        <input type="date" id="date" required>
+        <span class="date-placeholder" aria-hidden="true">📅 Insert date</span>
+      </div>
 
       <button type="submit">＋ Add Transaction</button>
     </form>
@@ -80,7 +83,10 @@
       </select>
 
       <label class="sr-only" for="monthFilter">Filter by month</label>
-      <input type="month" id="monthFilter">
+      <div class="date-wrapper month-wrapper" id="monthFilterWrapper">
+        <input type="month" id="monthFilter">
+        <span class="date-placeholder" aria-hidden="true">📅 Select month</span>
+      </div>
     </div>
   </section>
 
