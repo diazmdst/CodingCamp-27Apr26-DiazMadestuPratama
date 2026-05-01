@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2" defer></script>
+  <script src="js/script.js" defer></script>
 </head>
 <body>
 
-<div class="container">
+<main class="container">
 
-  <!-- HEADER -->
-  <div class="app-header">
-    <h1>💸Expense Tracker💸</h1>
-    <p class="subtitle">✨Kontrol pengeluaran bang, abis duit tau rasa✨</p>
-  </div>
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <h1>💸 Expense Tracker 💸</h1>
+    <p class="subtitle">✨ Kontrol pengeluaran bang, abis duit tau rasa ✨</p>
+  </header>
 
-  <!-- BALANCE -->
-  <h2 id="balance">Total: Rp 0</h2>
+  <!-- ===== BALANCE ===== -->
+  <section aria-label="Monthly total" id="balance">
+    <span class="balance-label">Total</span>
+    <span class="balance-amount">Rp 0</span>
+  </section>
 
-  <!-- FORM -->
-  <div class="form-card">
-    <p class="section-label">Add Transaction</p>
-    <form id="form">
+  <!-- ===== ADD TRANSACTION ===== -->
+  <section class="card" aria-labelledby="form-heading">
+    <h2 class="section-label" id="form-heading">Add Transaction</h2>
+    <form id="form" novalidate>
       <div class="input-row">
-        <input type="text" id="name" placeholder="✏️ Item name…">
-        <input type="number" id="amount" placeholder="💰 Amount (Rp)" min="1">
+        <label class="sr-only" for="name">Item name</label>
+        <input type="text" id="name" placeholder="✏️ Item name…" autocomplete="off" required>
+
+        <label class="sr-only" for="amount">Amount</label>
+        <input type="number" id="amount" placeholder="💰 Amount (Rp)" min="1" required>
       </div>
 
-      <select id="category">
+      <label class="sr-only" for="category">Category</label>
+      <select id="category" required>
         <option value="">🏷️ Select Category</option>
         <option value="Food">🍔 Food</option>
         <option value="Transport">🚌 Transport</option>
@@ -37,41 +46,56 @@
         <option value="custom">＋ Add Custom Category</option>
       </select>
 
-      <input type="text" id="customCategory" placeholder="🆕 New category name…" style="display:none;">
-      <input type="date" id="date">
+      <label class="sr-only" for="customCategory">New category name</label>
+      <input type="text" id="customCategory" placeholder="🆕 New category name…" autocomplete="off" hidden>
+
+      <!-- Custom category tags (rendered by JS) -->
+      <div id="customCategoryTags" role="list" aria-label="Custom categories"></div>
+
+      <label class="sr-only" for="date">Date</label>
+      <input type="date" id="date" required>
 
       <button type="submit">＋ Add Transaction</button>
     </form>
-  </div>
+  </section>
 
-  <!-- FILTER + SORT -->
-  <div class="controls-card">
-    <p class="section-label">Filter &amp; Sort</p>
+  <!-- ===== FILTER & SORT ===== -->
+  <section class="card" aria-labelledby="controls-heading">
+    <h2 class="section-label" id="controls-heading">Filter &amp; Sort</h2>
     <div class="controls">
+      <label class="sr-only" for="sort">Sort by</label>
       <select id="sort">
         <option value="">Recently Added</option>
         <option value="amount-desc">↓ Amount (High → Low)</option>
         <option value="amount-asc">↑ Amount (Low → High)</option>
         <option value="category">A–Z Category</option>
       </select>
-      <input type="month" id="monthFilter" title="Filter by month">
+
+      <label class="sr-only" for="monthFilter">Filter by month</label>
+      <input type="month" id="monthFilter">
     </div>
-  </div>
+  </section>
 
-  <!-- LIST -->
-  <div class="list-card">
-    <p class="section-label">Transactions</p>
-    <ul id="list"></ul>
-  </div>
+  <!-- ===== TRANSACTION LIST ===== -->
+  <section class="card" aria-labelledby="list-heading">
+    <h2 class="section-label" id="list-heading">Transactions</h2>
+    <ul id="list" aria-live="polite"></ul>
+  </section>
 
-  <!-- CHART -->
-  <div class="chart-section">
-    <p class="section-label">Spending by Category</p>
-    <canvas id="chart"></canvas>
-  </div>
+  <!-- ===== CHART ===== -->
+  <section class="card chart-section" aria-labelledby="chart-heading">
+    <h2 class="section-label" id="chart-heading">Spending by Category</h2>
+    <canvas id="chart" role="img" aria-label="Spending by category pie chart"></canvas>
+  </section>
 
-</div>
+  <!-- ===== FOOTER ===== -->
+  <footer class="app-footer">
+    <p class="footer-brand">💸 Expense Tracker 💸</p>
+    <p class="footer-sub">Data stored locally in your browser &middot; no account needed</p>
+    <p class="footer-credit">Made with ❤️ by @diazmdst</p>
+  </footer>
 
-<script src="js/script.js"></script>
+</main>
+
 </body>
 </html>
